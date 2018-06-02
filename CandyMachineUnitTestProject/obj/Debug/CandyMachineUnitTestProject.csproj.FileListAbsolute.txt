@@ -1,0 +1,16 @@
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\CandyMachineUnitTestProject.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\CandyMachineUnitTestProject.pdb
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\CandyMachine.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\CandyMachine.pdb
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\obj\Debug\CandyMachineUnitTestProject.csprojAssemblyReference.cache
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\obj\Debug\CandyMachineUnitTestProject.csproj.CoreCompileInputs.cache
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\obj\Debug\CandyMachineUnitTestProject.csproj.CopyComplete
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\obj\Debug\CandyMachineUnitTestProject.dll
+C:\Users\reinis\source\repos\CandyMachine\CandyMachineUnitTestProject\obj\Debug\CandyMachineUnitTestProject.pdb
