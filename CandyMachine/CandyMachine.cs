@@ -24,6 +24,13 @@ namespace CandyMachine
         /// <summary>Products that are sold (Product product, int count).</summary>
         private readonly Tuple<Product, int>[] products;
 
+        private static readonly IList<Money> acceptableCoins = new List<Money>() {
+            new Money { Euros = 0, Cents = 10 },
+            new Money { Euros = 0, Cents = 20 },
+            new Money { Euros = 0, Cents = 50 },
+            new Money { Euros = 1, Cents = 0 }
+        };
+
         public CandyMachine(string manufacturer, int shelfCount, int shelfSize)
         {
             Manufacturer = manufacturer;
@@ -102,7 +109,12 @@ namespace CandyMachine
             {
                 throw new ArgumentOutOfRangeException("You must insert at least 10 cents");
             }
+
             //TODO: validate coins
+            if (false == IsCoinValid(amount))
+            {
+                throw new ArgumentOutOfRangeException("Candy machine accepts only 10|20|50 cent and 1 euro coins");
+            }
             Amount = MoneyHelper.AddMoney(Amount, amount);
 
             return Amount;
@@ -111,6 +123,11 @@ namespace CandyMachine
         public Money ReturnMoney()
         {
             return Amount;
+        }
+
+        public static bool IsCoinValid(Money coin)
+        {
+            return acceptableCoins.Contains(coin);
         }
     }
 }

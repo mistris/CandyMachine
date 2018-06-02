@@ -62,26 +62,5 @@ namespace CandyMachine.Tests
             Assert.ThrowsException<ArgumentException>(() => MoneyHelper.SubtractMoney(currentMoney, new Money { Euros = 1, Cents = 0 }));
 
         }
-
-        [TestMethod()]
-        public void IsCoinValidTest()
-        {
-            // Check if all acceptable coins are valid
-            Assert.IsTrue(MoneyHelper.IsCoinValid(new Money { Euros = 0, Cents = 10 }));
-            Assert.IsTrue(MoneyHelper.IsCoinValid(new Money { Euros = 0, Cents = 20 }));
-            Assert.IsTrue(MoneyHelper.IsCoinValid(new Money { Euros = 0, Cents = 50 }));
-            Assert.IsTrue(MoneyHelper.IsCoinValid(new Money { Euros = 1, Cents = 0 }));
-        }
-
-        [TestMethod()]
-        public void IsCoinInvalidTest()
-        {
-            // Check if candy machine doesn't accept invalid coins
-            Assert.IsFalse(MoneyHelper.IsCoinValid(new Money { Euros = 0, Cents = 1 }));
-            Assert.IsFalse(MoneyHelper.IsCoinValid(new Money { Euros = 0, Cents = 2 }));
-            Assert.IsFalse(MoneyHelper.IsCoinValid(new Money { Euros = 0, Cents = 5 }));
-            Assert.IsFalse(MoneyHelper.IsCoinValid(new Money { Euros = 2, Cents = 0 }));
-            Assert.IsFalse(MoneyHelper.IsCoinValid(new Money { Euros = 5, Cents = 20 }));
-        }
     }
 }

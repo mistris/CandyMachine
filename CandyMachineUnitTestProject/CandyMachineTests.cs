@@ -121,5 +121,26 @@ namespace CandyMachine.Tests
         {
             Assert.Fail();
         }
+
+        [TestMethod()]
+        public void IsCoinValidTest()
+        {
+            // Check if all acceptable coins are valid
+            Assert.IsTrue(CandyMachine.IsCoinValid(new Money { Euros = 0, Cents = 10 }));
+            Assert.IsTrue(CandyMachine.IsCoinValid(new Money { Euros = 0, Cents = 20 }));
+            Assert.IsTrue(CandyMachine.IsCoinValid(new Money { Euros = 0, Cents = 50 }));
+            Assert.IsTrue(CandyMachine.IsCoinValid(new Money { Euros = 1, Cents = 0 }));
+        }
+
+        [TestMethod()]
+        public void IsCoinInvalidTest()
+        {
+            // Check if candy machine doesn't accept invalid coins
+            Assert.IsFalse(CandyMachine.IsCoinValid(new Money { Euros = 0, Cents = 1 }));
+            Assert.IsFalse(CandyMachine.IsCoinValid(new Money { Euros = 0, Cents = 2 }));
+            Assert.IsFalse(CandyMachine.IsCoinValid(new Money { Euros = 0, Cents = 5 }));
+            Assert.IsFalse(CandyMachine.IsCoinValid(new Money { Euros = 2, Cents = 0 }));
+            Assert.IsFalse(CandyMachine.IsCoinValid(new Money { Euros = 5, Cents = 20 }));
+        }
     }
 }
