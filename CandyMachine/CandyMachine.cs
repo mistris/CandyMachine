@@ -18,12 +18,10 @@ namespace CandyMachine
         /// </summary>
         public int ShelfCount { get; private set; }
 
-        /// <summary>Number of products you can store in one shelf.</summary>
-        public int ShelfSize { get; private set; }
+        /// <summary>Candy machine shelves which contain products.</summary>
+        private readonly Shelf[] shelves;
 
-        /// <summary>Products that are sold (Product product, int count).</summary>
-        private readonly Tuple<Product, int>[] products;
-
+        // TODO: maybe add it to constructor? otherwise there is no way to change acceptable coins
         private static readonly IList<Money> acceptableCoins = new List<Money>() {
             new Money { Euros = 0, Cents = 10 },
             new Money { Euros = 0, Cents = 20 },
@@ -35,17 +33,7 @@ namespace CandyMachine
         {
             Manufacturer = manufacturer;
             ShelfCount = shelfCount;
-            ShelfSize = shelfSize;
-            products = new Tuple<Product, int>[shelfCount];
-        }
-
-        /// <summary>Checks if candy machine contains given product.</summary>
-        /// <param name="productNumber">Product number in candy machine product list.</param>
-        /// <param name="product">Product that we want to find.</param>
-        /// <returns></returns>
-        public bool ContainsProduct(int productNumber, Product product)
-        {
-            return products[productNumber].Item1.Equals(product);
+            shelves = new Shelf[shelfCount].Select(s => new Shelf(shelfSize)).ToArray();
         }
 
         /// <summary>Adds a product to the candy machine.</summary>
@@ -56,23 +44,23 @@ namespace CandyMachine
         {
             ValidateProduct(product, count, productNumber);
 
-            products[productNumber] = new Tuple<Product, int>(product, count);
+            shelves[productNumber].AddProduct(product, count);
         }
 
         private void ValidateProduct(Product product, int count, int productNumber)
         {
             // TODO: Check if productNumber position is valid
-            if (productNumber < 0 || productNumber > products.Length - 1)
+            if (productNumber < 0 || productNumber > shelves.Length - 1)
             {
-                throw new IndexOutOfRangeException("productNumber must be >= 0 and <= ShelfCount");
+                throw new IndexOutOfRangeException("${productNumber must be >= 0 and <= products.Length}"); //TODO
             }
 
-            Tuple<Product, int> productInShelf = products[productNumber];
+            Shelf shelf = shelves[productNumber];
 
             // TODO: Check if there is enough space for product in specified productNumber position
-            int alreadyAddedProductCount = productInShelf == null ? 0 : productInShelf.Item2;
+            int alreadyAddedProductCount = shelf == null ? 0 : shelf.ProductCount;
 
-            if (count < 1 || count > ShelfSize - alreadyAddedProductCount)
+            if (count < 1 || count > shelf.ShelfSize - alreadyAddedProductCount)
             {
                 // TODO: throw exception
                 throw new ArgumentException("count must be > 0 and there must be enough space on the shelf");
@@ -81,11 +69,9 @@ namespace CandyMachine
             // TODO: Check if user is trying to add different product to productNumber position
 
             // Don't check anything if shelf is empty and user is trying to add the first product.
-            if (products[productNumber] != null)
+            if (shelf.Product != null)
             {
-                Product existingProduct = products[productNumber].Item1;
-
-                if (!existingProduct.Equals(product))
+                if (!shelf.Product.Equals(product))
                 {
                     // TODO: throw exception
                     throw new ArgumentException("You cannot add different products in one shelf");
@@ -100,7 +86,7 @@ namespace CandyMachine
 
         public int GetProductAmount(int productNumber)
         {
-            return products[productNumber].Item2;
+            return shelves[productNumber].ProductCount;
         }
 
         public Money InsertCoin(Money amount)
@@ -113,8 +99,10 @@ namespace CandyMachine
             //TODO: validate coins
             if (false == IsCoinValid(amount))
             {
+                // TODO: add getter for acceptable coins and transform value to string
                 throw new ArgumentOutOfRangeException("Candy machine accepts only 10|20|50 cent and 1 euro coins");
             }
+
             Amount = MoneyHelper.AddMoney(Amount, amount);
 
             return Amount;
@@ -122,7 +110,18 @@ namespace CandyMachine
 
         public Money ReturnMoney()
         {
-            return Amount;
+            Money returnMoney = Amount;
+            Amount = new Money();
+
+            return returnMoney;
+        }
+
+        /// <summary>Checks if shelf contains given product.</summary>
+        ///<param name="productNumber">Product number in candy machine product list.</param>
+        ///<param name="product">Product that we want to find.</param>
+        public bool HasProduct(int productNumber, Product product)
+        {
+            return shelves[productNumber].ContainsProduct(product);
         }
 
         public static bool IsCoinValid(Money coin)

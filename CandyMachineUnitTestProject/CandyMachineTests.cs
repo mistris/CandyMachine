@@ -14,17 +14,29 @@ namespace CandyMachine.Tests
         private const string Manufacturer = "Saeco";
         private const int ShelfCount = 10;
         private const int ShelfSize = 5;
+        
+        private void FillShelvesWithProducts(CandyMachine candyMachine)
+        {
+            candyMachine.AddProduct(new Product { Name = "Bounty", Price = new Money { Cents = 80 } }, ShelfSize, 2);
+            candyMachine.AddProduct(new Product { Name = "Daim", Price = new Money { Euros = 1, Cents = 10 } }, ShelfSize, 4);
+            candyMachine.AddProduct(new Product { Name = "KitKat", Price = new Money { Euros = 1 } }, ShelfSize, 6);
+            candyMachine.AddProduct(new Product { Name = "Lion", Price = new Money { Cents = 70 } }, ShelfSize, 8);
+            candyMachine.AddProduct(new Product { Name = "Mars", Price = new Money { Cents = 90 } }, ShelfSize, 3);
+            candyMachine.AddProduct(new Product { Name = "MilkyWay", Price = new Money { Cents = 80 } }, ShelfSize, 5);
+            candyMachine.AddProduct(new Product { Name = "Skittles", Price = new Money { Euros = 1, Cents = 60 } }, ShelfSize, 7);
+            candyMachine.AddProduct(new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 20 } }, ShelfSize, 0);
+            candyMachine.AddProduct(new Product { Name = "Tupla", Price = new Money { Cents = 80 } }, ShelfSize, 9);
+            candyMachine.AddProduct(new Product { Name = "Twix", Price = new Money { Cents = 70 } }, ShelfSize, 1);
+        }
 
         [TestMethod()]
         public void CandyMachineTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
 
-            Assert.AreEqual(candyMachine.Manufacturer, Manufacturer);
-            Assert.AreEqual(candyMachine.ShelfSize, ShelfSize);
-            Assert.AreEqual(candyMachine.ShelfCount, ShelfCount);
+            Assert.AreEqual(Manufacturer, candyMachine.Manufacturer);
+            Assert.AreEqual(ShelfCount, candyMachine.ShelfCount);
         }
-
 
         [TestMethod()]
         public void AddValidProductTest()
@@ -38,7 +50,7 @@ namespace CandyMachine.Tests
 
             candyMachine.AddProduct(product, 5, productNumber);
 
-            Assert.IsTrue(candyMachine.ContainsProduct(productNumber, product));
+            Assert.IsTrue(candyMachine.HasProduct(productNumber, product));
         }
 
         [TestMethod()]
@@ -111,15 +123,67 @@ namespace CandyMachine.Tests
         }
 
         [TestMethod()]
-        public void InsertCoinTest()
+        public void InsertValidCoinsTest()
         {
-            Assert.Fail();
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+
+            // Insert 10 cent coin and check if candy machine contains 10 cents
+            candyMachine.InsertCoin(new Money { Cents = 10 });
+            Assert.AreEqual(10, candyMachine.Amount.Cents);
+
+            // Insert 3x20 and 1x50 cent coins and check if candy machine now contains 1 euro 20 cents
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+            candyMachine.InsertCoin(new Money { Cents = 50 });
+
+            Assert.AreEqual(1, candyMachine.Amount.Euros);
+            Assert.AreEqual(20, candyMachine.Amount.Cents);
         }
 
         [TestMethod()]
-        public void ReturnMoneyTest()
+        public void InsertInvalidCoinsTest()
         {
-            Assert.Fail();
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+
+            // Insert invalid coins
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Cents = 1 }));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Cents = 2 }));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Cents = 5 }));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Euros = 2 }));
+        }
+
+        [TestMethod()]
+        public void ReturnMoneyWithoutBuyingProductsTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+
+            // Insert 20 cents and check if candy machine can return them
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+            Money remainder = candyMachine.ReturnMoney();
+
+            Assert.AreEqual(0, remainder.Euros);
+            Assert.AreEqual(20, remainder.Cents);
+
+            // Insert 2x1 euro coins, 3x50 cent coins, 4x20 cent coins and 1x10 cent coin (Total: 4 euros 40 cents)
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+
+            candyMachine.InsertCoin(new Money { Cents = 50 });
+            candyMachine.InsertCoin(new Money { Cents = 50 });
+            candyMachine.InsertCoin(new Money { Cents = 50 });
+
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+
+            candyMachine.InsertCoin(new Money { Cents = 10 });
+
+            // Check if candy machine returns 4 euros 40 cents
+            remainder = candyMachine.ReturnMoney();
+            Assert.AreEqual(4, remainder.Euros);
+            Assert.AreEqual(40, remainder.Cents);
         }
 
         [TestMethod()]

@@ -23,7 +23,7 @@ namespace CandyMachine
         void AddProduct(Product product, int count, int productNumber);
 
         ///<summary>Inserts the coin into candy machine.</summary>
-        ///<paramname="amount">Coin nominal value.</param>
+        ///<param name="amount">Coin nominal value.</param>
         Money InsertCoin(Money amount);
 
         ///<summary>
@@ -33,7 +33,7 @@ namespace CandyMachine
         Money ReturnMoney();
 
         ///<summary>Buys product from list of products.</summary>
-        ///<paramname="productNumber">Product number in candy machine product list.</param>
+        ///<param name="productNumber">Product number in candy machine product list.</param>
         Product Buy(int productNumber);
     }
 

@@ -59,8 +59,7 @@ namespace CandyMachine.Tests
             Assert.AreEqual(90, currentMoney.Cents);
 
             // Subtract too much money
-            Assert.ThrowsException<ArgumentException>(() => MoneyHelper.SubtractMoney(currentMoney, new Money { Euros = 1, Cents = 0 }));
-
+            Assert.ThrowsException<Exception>(() => MoneyHelper.SubtractMoney(currentMoney, new Money { Euros = 1, Cents = 0 }));
         }
     }
 }
