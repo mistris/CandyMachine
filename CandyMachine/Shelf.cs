@@ -20,6 +20,7 @@ namespace CandyMachine
         public Shelf(int shelfSize)
         {
             ShelfSize = shelfSize;
+            ProductCount = 0;
         }
 
         /// <summary>Checks if shelf contains given product.</summary>
@@ -40,8 +41,14 @@ namespace CandyMachine
         /// <param name="count">How many products do we want to add.</param>
         public void AddProduct(Product product, int count)
         {
+            // TODO: check if product price is correct (it can be made of acceptable coins)
             Product = product;
             ProductCount += count;
+        }
+
+        public void DecreaseProductCount()
+        {
+            ProductCount--;
         }
 
         /// <summary>Check if this specific shelf is empty.</summary>

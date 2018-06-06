@@ -33,6 +33,8 @@ namespace CandyMachine
         {
             Manufacturer = manufacturer;
             ShelfCount = shelfCount;
+
+            // Add empty shelves to candy machine
             shelves = new Shelf[shelfCount].Select(s => new Shelf(shelfSize)).ToArray();
         }
 
@@ -81,7 +83,21 @@ namespace CandyMachine
 
         public Product Buy(int productNumber)
         {
-            throw new NotImplementedException();
+            Shelf shelf = shelves[productNumber];
+
+            // Do not allow purchase if shelf doesn't contain at least one unit of the selected product.
+            if (shelf.ProductCount < 1)
+            {
+                throw new Exception("The selected product is out of stock");
+            }
+
+            // Decrease selected product count and subtract price from current amount of money.
+            Product selectedProduct = shelf.Product.Value;
+            shelf.DecreaseProductCount();
+
+            Amount = MoneyHelper.SubtractMoney(Amount, selectedProduct.Price);
+            
+            return selectedProduct;
         }
 
         public int GetProductAmount(int productNumber)
@@ -96,7 +112,7 @@ namespace CandyMachine
                 throw new ArgumentOutOfRangeException("You must insert at least 10 cents");
             }
 
-            //TODO: validate coins
+            // Validate inserted coin
             if (false == IsCoinValid(amount))
             {
                 // TODO: add getter for acceptable coins and transform value to string

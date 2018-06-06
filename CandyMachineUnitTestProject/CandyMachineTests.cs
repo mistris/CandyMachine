@@ -14,19 +14,19 @@ namespace CandyMachine.Tests
         private const string Manufacturer = "Saeco";
         private const int ShelfCount = 10;
         private const int ShelfSize = 5;
-        
+
         private void FillShelvesWithProducts(CandyMachine candyMachine)
         {
-            candyMachine.AddProduct(new Product { Name = "Bounty", Price = new Money { Cents = 80 } }, ShelfSize, 2);
-            candyMachine.AddProduct(new Product { Name = "Daim", Price = new Money { Euros = 1, Cents = 10 } }, ShelfSize, 4);
-            candyMachine.AddProduct(new Product { Name = "KitKat", Price = new Money { Euros = 1 } }, ShelfSize, 6);
-            candyMachine.AddProduct(new Product { Name = "Lion", Price = new Money { Cents = 70 } }, ShelfSize, 8);
-            candyMachine.AddProduct(new Product { Name = "Mars", Price = new Money { Cents = 90 } }, ShelfSize, 3);
+            candyMachine.AddProduct(new Product { Name = "Bounty", Price = new Money { Cents = 80 } }, ShelfSize, 0);
+            candyMachine.AddProduct(new Product { Name = "Daim", Price = new Money { Euros = 1, Cents = 10 } }, ShelfSize, 1);
+            candyMachine.AddProduct(new Product { Name = "KitKat", Price = new Money { Euros = 1 } }, ShelfSize, 2);
+            candyMachine.AddProduct(new Product { Name = "Lion", Price = new Money { Cents = 70 } }, ShelfSize, 3);
+            candyMachine.AddProduct(new Product { Name = "Mars", Price = new Money { Cents = 90 } }, ShelfSize, 4);
             candyMachine.AddProduct(new Product { Name = "MilkyWay", Price = new Money { Cents = 80 } }, ShelfSize, 5);
-            candyMachine.AddProduct(new Product { Name = "Skittles", Price = new Money { Euros = 1, Cents = 60 } }, ShelfSize, 7);
-            candyMachine.AddProduct(new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 20 } }, ShelfSize, 0);
-            candyMachine.AddProduct(new Product { Name = "Tupla", Price = new Money { Cents = 80 } }, ShelfSize, 9);
-            candyMachine.AddProduct(new Product { Name = "Twix", Price = new Money { Cents = 70 } }, ShelfSize, 1);
+            candyMachine.AddProduct(new Product { Name = "Skittles", Price = new Money { Euros = 1, Cents = 60 } }, ShelfSize, 6);
+            candyMachine.AddProduct(new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 20 } }, ShelfSize, 7);
+            candyMachine.AddProduct(new Product { Name = "Tupla", Price = new Money { Cents = 80 } }, ShelfSize, 8);
+            candyMachine.AddProduct(new Product { Name = "Twix", Price = new Money { Cents = 70 } }, ShelfSize, 9);
         }
 
         [TestMethod()]
@@ -101,9 +101,37 @@ namespace CandyMachine.Tests
         }
 
         [TestMethod()]
-        public void BuyTest()
+        public void BuyProductWithEnoughMoneyTest()
         {
-            Assert.Fail();
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+
+            Money price = new Money { Euros = 1, Cents = 20 };
+            Product product = new Product { Name = "Snickers", Price = price };
+
+            // Add 5 snickers into candy machine
+            int count = 5;
+            int productNumber = 7;
+            candyMachine.AddProduct(product, count, productNumber);
+
+            // Insert 2 euros into candy machine
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+
+            // Buy 1 snickers which costs 1 euro 20 cents
+            Product purchasedProduct = candyMachine.Buy(productNumber);
+
+            // Check if candy machine gave us the correct product
+            Assert.AreEqual("Snickers", purchasedProduct.Name);
+            Assert.AreEqual(1, purchasedProduct.Price.Euros);
+            Assert.AreEqual(20, purchasedProduct.Price.Cents);
+
+            // Check if candy machine now contains 4 snickers
+            Assert.AreEqual(4, candyMachine.GetProductAmount(productNumber));
+
+            // Check if remainder is 80 cents
+            Money remainder = candyMachine.ReturnMoney();
+            Assert.AreEqual(0, remainder.Euros);
+            Assert.AreEqual(80, remainder.Cents);
         }
 
         [TestMethod()]

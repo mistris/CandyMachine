@@ -18,6 +18,10 @@ namespace CandyMachine
             return ConvertCentsToMoney(resultCents);
         }
 
+        /// <summary>Subtract one Money object from another</summary>
+        /// <param name="amount">Current amount of money</param>
+        /// <param name="price">Amount of money to be taken away from current amount of money</param>
+        /// <returns>Returns new instance of Money</returns>
         public static Money SubtractMoney(Money amount, Money price)
         {
             int priceCents = ConvertMoneyToCents(price);
@@ -33,7 +37,7 @@ namespace CandyMachine
             return ConvertCentsToMoney(remainderCents);
         }
 
-        /// <summary>Convert Money to cents</summary>
+        /// <summary>Converts Money to cents</summary>
         /// <param name="money">Instance of Money</param>
         /// <returns>Returns amount of cents</returns>
         public static int ConvertMoneyToCents(Money money)
