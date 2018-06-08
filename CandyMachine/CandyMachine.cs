@@ -75,17 +75,25 @@ namespace CandyMachine
                 }
             }
 
-            // Don't check anything if shelf is empty and user is trying to add the first product.
+            // Check if user is trying to add different product to productNumber position
             if (shelf.Product != null)
             {
-                // Check if user is trying to add different product to productNumber position
                 if (!shelf.Product.Equals(product))
                 {
                     throw new ArgumentException("You cannot add different products in one shelf");
                 }
             }
+            
+            // Check if product price is correct (it can be made of acceptable coins)
+            if (false == MoneyHelper.CanPriceBeMadeOfAcceptableCoins(product.Price, CandyMachine.acceptableCoins))
+            {
+                throw new ArgumentException($"Price {MoneyHelper.ConvertMoneyToString(product.Price)} cannot be made of acceptable coins: {MoneyHelper.ConvertMoneyListToString(CandyMachine.acceptableCoins)}");
+            }
         }
 
+        ///<summary>Buys product from list of products.</summary>
+        ///<param name="productNumber">Product number in candy machine product list.</param>
+        /// <returns>Returns instance of Product that we bought.</returns>
         public Product Buy(int productNumber)
         {
             Shelf shelf = shelves[productNumber];

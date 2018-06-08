@@ -45,6 +45,9 @@ namespace CandyMachine
             return money.Cents + money.Euros * 100;
         }
 
+        /// <summary>Converts Money object to string.</summary>
+        /// <param name="money"></param>
+        /// <returns></returns>
         public static string ConvertMoneyToString(Money money)
         {
             string moneyString = "";
@@ -109,17 +112,16 @@ namespace CandyMachine
         /// <returns>Returns true if price can be made of given acceptable coins.</returns>
         public static bool CanPriceBeMadeOfAcceptableCoins(Money price, IList<Money> acceptableCoins)
         {
-            // Sort acceptable coins in descending order by its nominal value
-            acceptableCoins = acceptableCoins.OrderBy(m => m.Euros).ThenBy(m => m.Cents).ToList();
-
             // Convert each acceptable coin to cents
-            IList<int> acceptableCoinsInCents = acceptableCoins.Select(c => ConvertMoneyToCents(c)).ToList();
+            IList<int> acceptableCoinsInAscendingOrder = acceptableCoins.Select(c => ConvertMoneyToCents(c)).OrderBy(m => m).ToList();
+            IList<int> acceptableCoinsInDescendingOrder = acceptableCoins.Select(c => ConvertMoneyToCents(c)).OrderByDescending(m => m).ToList();
 
             // Convert price in cents
             int priceInCents = ConvertMoneyToCents(price);
+            int tempPriceInCents = priceInCents;
 
             // Subtract each acceptable coin from price while coin nominal value is less or equal than price 
-            foreach (int coinValueInCents in acceptableCoinsInCents)
+            foreach (int coinValueInCents in acceptableCoinsInDescendingOrder)
             {
                 while (priceInCents >= coinValueInCents)
                 {
@@ -128,6 +130,20 @@ namespace CandyMachine
 
                 // If price in cents is 0, it means that we have made it from acceptable coins
                 if (priceInCents == 0)
+                {
+                    return true;
+                }
+            }
+
+            // If previous attempt wasn't successful, try to make given price of acceptable coins in reverse order
+            foreach (int coinValueInCents in acceptableCoinsInAscendingOrder)
+            {
+                while (tempPriceInCents >= coinValueInCents)
+                {
+                    tempPriceInCents -= coinValueInCents;
+                }
+
+                if (tempPriceInCents == 0)
                 {
                     return true;
                 }

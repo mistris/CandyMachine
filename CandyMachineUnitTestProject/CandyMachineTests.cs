@@ -83,6 +83,17 @@ namespace CandyMachine.Tests
             candyMachine.AddProduct(product, 5, 1);
             Assert.ThrowsException<Exception>(() => candyMachine.AddProduct(product, 1, 1));
         }
+        
+        [TestMethod()]
+        public void AddProductWithInvalidPriceTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+
+            Money price = new Money { Euros = 1, Cents = 55 };
+            Product product = new Product { Name = "Snickers", Price = price };
+            
+            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, 1));
+        }
 
         [TestMethod()]
         public void AddDifferentProductsInOneShelfTest()

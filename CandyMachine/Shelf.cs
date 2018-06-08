@@ -41,12 +41,6 @@ namespace CandyMachine
         /// <param name="count">How many products do we want to add.</param>
         public void AddProduct(Product product, int count)
         {
-            // TODO: check if product price is correct (it can be made of acceptable coins)
-            if (false == MoneyHelper.CanPriceBeMadeOfAcceptableCoins(product.Price, CandyMachine.acceptableCoins))
-            {
-                throw new ArgumentException($"Price {MoneyHelper.ConvertMoneyToString(product.Price)} cannot be made of acceptable coins: {MoneyHelper.ConvertMoneyListToString(CandyMachine.acceptableCoins)}");
-            }
-
             Product = product;
             ProductCount += count;
         }

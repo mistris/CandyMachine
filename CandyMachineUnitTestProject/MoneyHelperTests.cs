@@ -61,5 +61,44 @@ namespace CandyMachine.Tests
             // Subtract too much money
             Assert.ThrowsException<Exception>(() => MoneyHelper.SubtractMoney(currentMoney, new Money { Euros = 1, Cents = 0 }));
         }
+
+        [TestMethod()]
+        public void ConvertMoneyListToStringTest()
+        {
+            IList<Money> moneyList = new List<Money>()
+            {
+                new Money { Cents = 20 },
+                new Money { Euros = 1 },
+                new Money { Cents = 10 }
+            };
+
+            Assert.AreEqual("10 cent | 20 cent | 1 euro", MoneyHelper.ConvertMoneyListToString(moneyList));
+        }
+
+        [TestMethod()]
+        public void MakeValidPriceOfAcceptableCoinsTest()
+        {
+            Money price = new Money { Euros = 1, Cents = 60 };
+
+            IList<Money> acceptableCoins = new List<Money>() {
+                new Money { Euros = 0, Cents = 20 },
+                new Money { Euros = 0, Cents = 50 },
+            };
+
+            Assert.IsTrue(MoneyHelper.CanPriceBeMadeOfAcceptableCoins(price, acceptableCoins));
+        }
+
+        [TestMethod()]
+        public void TryToMakeInValidPriceOfAcceptableCoinsTest()
+        {
+            Money price = new Money { Euros = 1, Cents = 30 };
+
+            IList<Money> acceptableCoins = new List<Money>() {
+                new Money { Euros = 0, Cents = 20 },
+                new Money { Euros = 0, Cents = 50 },
+            };
+
+            Assert.IsFalse(MoneyHelper.CanPriceBeMadeOfAcceptableCoins(price, acceptableCoins));
+        }
     }
 }
