@@ -45,12 +45,95 @@ namespace CandyMachine
             return money.Cents + money.Euros * 100;
         }
 
+        public static string ConvertMoneyToString(Money money)
+        {
+            string moneyString = "";
+
+            if (money.Euros > 0)
+            {
+                moneyString += money.Euros + " euros";
+
+                if (money.Cents > 0)
+                {
+                    moneyString += " " + money.Cents + " cents";
+                }
+            }
+            else
+            {
+                return money.Cents + " cents";
+            }
+
+            return moneyString;
+        }
+
         /// <summary>Convert cents to Money</summary>
         /// <param name="amount">Amount of cents</param>
         /// <returns>Returns new instance of Money</returns>
         public static Money ConvertCentsToMoney(int amount)
         {
             return new Money { Euros = amount / 100, Cents = amount % 100 };
+        }
+
+        public static string ConvertMoneyListToString(IList<Money> moneyList)
+        {
+            // Sort money list ascending by cents and euros
+            moneyList = moneyList.OrderBy(m => m.Euros).ThenBy(m => m.Cents).ToList();
+
+            string moneyString = "";
+
+            Money lastMoneyInList = moneyList.Last();
+
+            foreach (Money price in moneyList)
+            {
+                if (price.Cents > 0)
+                {
+                    moneyString += price.Cents + " cent";
+                }
+                else if (price.Euros > 0)
+                {
+                    moneyString += price.Euros + " euro";
+                }
+
+                if (!price.Equals(lastMoneyInList))
+                {
+                    moneyString += " | ";
+                }
+            }
+
+            return moneyString;
+        }
+
+        /// <summary>Check if given price can be made of given acceptable coins.</summary>
+        /// <param name="price">Price that we want to check.</param>
+        /// <param name="acceptableCoins">Acceptable coins which we need to use to make given price.</param>
+        /// <returns>Returns true if price can be made of given acceptable coins.</returns>
+        public static bool CanPriceBeMadeOfAcceptableCoins(Money price, IList<Money> acceptableCoins)
+        {
+            // Sort acceptable coins in descending order by its nominal value
+            acceptableCoins = acceptableCoins.OrderBy(m => m.Euros).ThenBy(m => m.Cents).ToList();
+
+            // Convert each acceptable coin to cents
+            IList<int> acceptableCoinsInCents = acceptableCoins.Select(c => ConvertMoneyToCents(c)).ToList();
+
+            // Convert price in cents
+            int priceInCents = ConvertMoneyToCents(price);
+
+            // Subtract each acceptable coin from price while coin nominal value is less or equal than price 
+            foreach (int coinValueInCents in acceptableCoinsInCents)
+            {
+                while (priceInCents >= coinValueInCents)
+                {
+                    priceInCents -= coinValueInCents;
+                }
+
+                // If price in cents is 0, it means that we have made it from acceptable coins
+                if (priceInCents == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

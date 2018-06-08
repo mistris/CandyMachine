@@ -36,20 +36,4 @@ namespace CandyMachine
         ///<param name="productNumber">Product number in candy machine product list.</param>
         Product Buy(int productNumber);
     }
-
-    public struct Money
-    {
-        public int Euros { get; set; }
-        public int Cents { get; set; }
-    }
-
-    public struct Product
-    {
-        ///<summary>Gets or sets the product price.</summary>
-        public Money Price { get; set; }
-
-        ///<summary>Gets or sets the product name.</summary>
-        public string Name { get; set; }
-    }
-
 }

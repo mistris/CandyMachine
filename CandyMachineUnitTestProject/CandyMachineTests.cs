@@ -81,7 +81,7 @@ namespace CandyMachine.Tests
 
             // Try to add 5 products and then 1 more
             candyMachine.AddProduct(product, 5, 1);
-            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, 1));
+            Assert.ThrowsException<Exception>(() => candyMachine.AddProduct(product, 1, 1));
         }
 
         [TestMethod()]
