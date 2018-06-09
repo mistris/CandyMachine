@@ -8,6 +8,10 @@ namespace CandyMachine
 {
     public static class MoneyHelper
     {
+        /// <summary>Adds given Money objects.</summary>
+        /// <param name="amount">Current amount of money.</param>
+        /// <param name="insertedMoney">Money that we want to add to current amount of money.</param>
+        /// <returns>Returns new instance of Money.</returns>
         public static Money AddMoney(Money amount, Money insertedMoney)
         {
             int amountCents = ConvertMoneyToCents(amount);
@@ -18,10 +22,10 @@ namespace CandyMachine
             return ConvertCentsToMoney(resultCents);
         }
 
-        /// <summary>Subtract one Money object from another</summary>
-        /// <param name="amount">Current amount of money</param>
-        /// <param name="price">Amount of money to be taken away from current amount of money</param>
-        /// <returns>Returns new instance of Money</returns>
+        /// <summary>Subtracts one Money object from another.</summary>
+        /// <param name="amount">Current amount of money.</param>
+        /// <param name="price">Amount of money to be taken away from current amount of money.</param>
+        /// <returns>Returns new instance of Money.</returns>
         public static Money SubtractMoney(Money amount, Money price)
         {
             int priceCents = ConvertMoneyToCents(price);
@@ -37,17 +41,17 @@ namespace CandyMachine
             return ConvertCentsToMoney(remainderCents);
         }
 
-        /// <summary>Converts Money to cents</summary>
+        /// <summary>Converts instance of Money to cents.</summary>
         /// <param name="money">Instance of Money</param>
-        /// <returns>Returns amount of cents</returns>
+        /// <returns>Returns amount of cents.</returns>
         public static int ConvertMoneyToCents(Money money)
         {
             return money.Cents + money.Euros * 100;
         }
 
-        /// <summary>Converts Money object to string.</summary>
-        /// <param name="money"></param>
-        /// <returns></returns>
+        /// <summary>Converts instance of Money to string.</summary>
+        /// <param name="money">Instance of Money.</param>
+        /// <returns>Returns string representing given instance of Money.</returns>
         public static string ConvertMoneyToString(Money money)
         {
             string moneyString = "";
@@ -69,14 +73,17 @@ namespace CandyMachine
             return moneyString;
         }
 
-        /// <summary>Convert cents to Money</summary>
+        /// <summary>Converts cents to instance of Money</summary>
         /// <param name="amount">Amount of cents</param>
-        /// <returns>Returns new instance of Money</returns>
+        /// <returns>Returns new instance of Money.</returns>
         public static Money ConvertCentsToMoney(int amount)
         {
             return new Money { Euros = amount / 100, Cents = amount % 100 };
         }
 
+        /// <summary>Converts List of Money objects to string.</summary>
+        /// <param name="moneyList">List<Money></param>
+        /// <returns>Returns string representing given List of Money objects.</returns>
         public static string ConvertMoneyListToString(IList<Money> moneyList)
         {
             // Sort money list ascending by cents and euros
@@ -86,6 +93,7 @@ namespace CandyMachine
 
             Money lastMoneyInList = moneyList.Last();
 
+            // Build string of given Money objects
             foreach (Money price in moneyList)
             {
                 if (price.Cents > 0)
@@ -106,17 +114,19 @@ namespace CandyMachine
             return moneyString;
         }
 
-        /// <summary>Check if given price can be made of given acceptable coins.</summary>
+        /// <summary>Checks if given price can be made of given acceptable coins.</summary>
         /// <param name="price">Price that we want to check.</param>
         /// <param name="acceptableCoins">Acceptable coins which we need to use to make given price.</param>
-        /// <returns>Returns true if price can be made of given acceptable coins.</returns>
+        /// <returns>Returns true if the price can be made of given acceptable coins.</returns>
         public static bool CanPriceBeMadeOfAcceptableCoins(Money price, IList<Money> acceptableCoins)
         {
-            // Convert each acceptable coin to cents
+            // Convert each acceptable coin to cents in ascending order
             IList<int> acceptableCoinsInAscendingOrder = acceptableCoins.Select(c => ConvertMoneyToCents(c)).OrderBy(m => m).ToList();
+
+            // Convert each acceptable coin to cents in descending order
             IList<int> acceptableCoinsInDescendingOrder = acceptableCoins.Select(c => ConvertMoneyToCents(c)).OrderByDescending(m => m).ToList();
 
-            // Convert price in cents
+            // Convert given price in cents
             int priceInCents = ConvertMoneyToCents(price);
             int tempPriceInCents = priceInCents;
 

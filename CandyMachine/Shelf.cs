@@ -44,13 +44,13 @@ namespace CandyMachine
             Product = product;
             ProductCount += count;
         }
-
+        
         public void DecreaseProductCount()
         {
             ProductCount--;
         }
 
-        /// <summary>Check if this specific shelf is empty.</summary>
+        /// <summary>Checks if this specific shelf is empty.</summary>
         /// <returns></returns>
         public bool IsEmpty()
         {
