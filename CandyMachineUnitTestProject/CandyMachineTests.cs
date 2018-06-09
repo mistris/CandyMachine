@@ -15,6 +15,7 @@ namespace CandyMachine.Tests
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
 
+            // Check if candy machine contains correct values for manufacturer and shelf count
             Assert.AreEqual(Manufacturer, candyMachine.Manufacturer);
             Assert.AreEqual(ShelfCount, candyMachine.ShelfCount);
         }
@@ -22,13 +23,16 @@ namespace CandyMachine.Tests
         [TestMethod()]
         public void AddValidProductTest()
         {
+            // Create new candy machine and test product
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
             Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 50 } };
 
             int productNumber = 1;
 
+            // Add product to candy machine
             candyMachine.AddProduct(product, 5, productNumber);
 
+            // Check if candy machine contains newly added product
             Assert.IsTrue(candyMachine.HasProduct(productNumber, product));
         }
 
@@ -111,9 +115,7 @@ namespace CandyMachine.Tests
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
             Product product = new Product { Price = new Money { Euros = 1, Cents = 50 } };
 
-            int productNumber = 1;
-
-            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, productNumber));
+            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, 1));
         }
 
         [TestMethod()]
