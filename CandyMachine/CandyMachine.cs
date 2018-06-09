@@ -113,10 +113,16 @@ namespace CandyMachine
                 throw new Exception("The selected product is out of stock");
             }
 
-            // Decrease selected product count and subtract price from current amount of money.
             Product selectedProduct = shelf.Product.Value;
-            shelf.DecreaseProductCount();
 
+            // Check if there is enough current amount of money to buy selected product
+            if (MoneyHelper.ConvertMoneyToCents(Amount) < MoneyHelper.ConvertMoneyToCents(selectedProduct.Price))
+            {
+                throw new ArithmeticException("Selected product's price is bigger than current amount of money.");
+            }
+
+            // Decrease selected product count and subtract price from current amount of money.
+            shelf.DecreaseProductCount();
             Amount = MoneyHelper.SubtractMoney(Amount, selectedProduct.Price);
 
             return selectedProduct;
@@ -160,18 +166,12 @@ namespace CandyMachine
         {
             return shelves[productNumber].ContainsProduct(product);
         }
-        
+
         /// <summary>Checks if given coin is valid.</summary>
         /// <param name="coin">Instance of Money that we want to validate.</param>
         /// <returns>Returns true if given coin is valid.</returns>
         public static bool IsCoinValid(Money coin)
         {
-            if (coin.Euros <= 0 && coin.Cents <= 0)
-            {
-                // TODO: get smallest coin nominal value
-                throw new ArgumentOutOfRangeException("You must insert at least 10 cents");
-            }
-
             return acceptableCoins.Contains(coin);
         }
     }

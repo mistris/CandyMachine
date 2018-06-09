@@ -146,6 +146,44 @@ namespace CandyMachine.Tests
         }
 
         [TestMethod()]
+        public void TryToBuyProductWithInsufficientAndWithSufficientAmountOfMoneyTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+
+            Money price = new Money { Euros = 1, Cents = 20 };
+            Product product = new Product { Name = "Snickers", Price = price };
+
+            // Add 1 snickers into candy machine
+            int count = 1;
+            int productNumber = 7;
+            candyMachine.AddProduct(product, count, productNumber);
+
+            // Insert 1 euro into candy machine
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+
+            // Buy 1 snicker which costs 1 euro 20 cents with only 1 euro
+            Assert.ThrowsException<ArithmeticException>(() => candyMachine.Buy(productNumber));
+
+            // Insert missing amount of money (20 cents) and try to buy the same product again
+            candyMachine.InsertCoin(new Money { Cents = 20 });
+
+            Product purchasedProduct = candyMachine.Buy(productNumber);
+
+            // Check if candy machine gave us the correct product
+            Assert.AreEqual("Snickers", purchasedProduct.Name);
+            Assert.AreEqual(1, purchasedProduct.Price.Euros);
+            Assert.AreEqual(20, purchasedProduct.Price.Cents);
+
+            // Check if there are no more snickers in candy machine
+            Assert.AreEqual(0, candyMachine.GetProductAmount(productNumber));
+
+            // Check if there is no remainder
+            Money remainder = candyMachine.ReturnMoney();
+            Assert.AreEqual(0, remainder.Euros);
+            Assert.AreEqual(0, remainder.Cents);
+        }
+
+        [TestMethod()]
         public void GetProductAmountTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
