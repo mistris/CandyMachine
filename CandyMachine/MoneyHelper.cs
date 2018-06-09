@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CandyMachine.CandyMachineExceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,7 +32,7 @@ namespace CandyMachine
 
             if (amountCents < priceCents)
             {
-                throw new Exception("Price cannot be greater than current amount of money.");
+                throw new NegativeMoneyException("Price cannot be greater than current amount of money.");
             }
 
             int remainderCents = amountCents - priceCents;

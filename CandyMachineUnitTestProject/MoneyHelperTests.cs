@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+using CandyMachine.CandyMachineExceptions;
 using System.Collections.Generic;
 
 namespace CandyMachine.Tests
@@ -55,7 +55,7 @@ namespace CandyMachine.Tests
             Assert.AreEqual(90, currentMoney.Cents);
 
             // Subtract too much money
-            Assert.ThrowsException<Exception>(() => MoneyHelper.SubtractMoney(currentMoney, new Money { Euros = 1, Cents = 0 }));
+            Assert.ThrowsException<NegativeMoneyException>(() => MoneyHelper.SubtractMoney(currentMoney, new Money { Euros = 1, Cents = 0 }));
         }
 
         [TestMethod()]

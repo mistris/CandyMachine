@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CandyMachine.CandyMachineExceptions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,7 +47,7 @@ namespace CandyMachine
             // Check if product price is correct (it can be made of acceptable coins)
             if (false == MoneyHelper.CanPriceBeMadeOfAcceptableCoins(product.Price, acceptableCoins))
             {
-                throw new ArgumentException($"Price {MoneyHelper.ConvertMoneyToString(product.Price)} cannot be made of acceptable coins: {MoneyHelper.ConvertMoneyListToString(acceptableCoins)}");
+                throw new InvalidPriceException($"Price {MoneyHelper.ConvertMoneyToString(product.Price)} cannot be made of acceptable coins: {MoneyHelper.ConvertMoneyListToString(acceptableCoins)}");
             }
 
             shelves[productNumber].AddProduct(product, count);
@@ -65,7 +65,7 @@ namespace CandyMachine
             // Do not allow purchase if shelf doesn't contain at least one unit of the selected product.
             if (shelf.IsEmpty())
             {
-                throw new Exception("The selected product is out of stock");
+                throw new ProductOutOfStockException("The selected product is out of stock");
             }
 
             Product selectedProduct = shelf.Product.Value;
@@ -73,7 +73,7 @@ namespace CandyMachine
             // Check if there is enough current amount of money to buy selected product
             if (MoneyHelper.ConvertMoneyToCents(Amount) < MoneyHelper.ConvertMoneyToCents(selectedProduct.Price))
             {
-                throw new ArithmeticException("Selected product's price is greater than current amount of money.");
+                throw new NotEnoughMoneyException("Selected product's price is greater than current amount of money.");
             }
 
             // Decrease selected product count and subtract price from current amount of money.
@@ -99,7 +99,7 @@ namespace CandyMachine
             // Validate inserted coin
             if (false == IsCoinValid(amount))
             {
-                throw new ArgumentOutOfRangeException($"Candy machine accepts only {MoneyHelper.ConvertMoneyListToString(acceptableCoins)} coins");
+                throw new InvalidCoinException($"Candy machine accepts only {MoneyHelper.ConvertMoneyListToString(acceptableCoins)} coins");
             }
 
             Amount = MoneyHelper.AddMoney(Amount, amount);
@@ -142,7 +142,7 @@ namespace CandyMachine
         {
             if (productNumber < 0 || productNumber > ShelfCount - 1)
             {
-                throw new IndexOutOfRangeException($"Product number must be between 0 and {ShelfCount - 1}");
+                throw new InvalidProductNumberException($"Product number must be between 0 and {ShelfCount - 1}");
             }
         }
     }

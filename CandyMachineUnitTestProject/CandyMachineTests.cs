@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CandyMachine.CandyMachineExceptions;
 using System;
 
 namespace CandyMachine.Tests
@@ -41,9 +42,9 @@ namespace CandyMachine.Tests
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
             Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 50 } };
-
-            Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.AddProduct(product, 3, -1));
-            Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.AddProduct(product, 3, 10));
+            
+            Assert.ThrowsException<InvalidProductNumberException>(() => candyMachine.AddProduct(product, 3, -1));
+            Assert.ThrowsException<InvalidProductNumberException>(() => candyMachine.AddProduct(product, 3, 10));
         }
 
         [TestMethod()]
@@ -53,14 +54,14 @@ namespace CandyMachine.Tests
             Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 50 } };
 
             // Try to add -1 products in a shelf
-            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, -1, 1));
+            Assert.ThrowsException<InvalidProductCountException>(() => candyMachine.AddProduct(product, -1, 1));
 
             // Try to add 6 products in a shelf which can contain only 5 products
-            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 6, 1));
+            Assert.ThrowsException<InvalidProductCountException>(() => candyMachine.AddProduct(product, 6, 1));
 
             // Try to add 5 products and then 1 more
             candyMachine.AddProduct(product, 5, 1);
-            Assert.ThrowsException<Exception>(() => candyMachine.AddProduct(product, 1, 1));
+            Assert.ThrowsException<InvalidProductCountException>(() => candyMachine.AddProduct(product, 1, 1));
         }
 
         [TestMethod()]
@@ -68,8 +69,8 @@ namespace CandyMachine.Tests
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
             Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 55 } };
-
-            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, 1));
+            
+            Assert.ThrowsException<InvalidPriceException>(() => candyMachine.AddProduct(product, 1, 1));
         }
 
         [TestMethod()]
@@ -85,7 +86,8 @@ namespace CandyMachine.Tests
 
             // Try to add different product to the same shelf
             Product differentProduct = new Product { Name = "Twix", Price = price };
-            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(differentProduct, 1, 1));
+            
+            Assert.ThrowsException<InvalidProductException>(() => candyMachine.AddProduct(differentProduct, 1, 1));
         }
 
         [TestMethod()]
@@ -114,8 +116,8 @@ namespace CandyMachine.Tests
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
             Product product = new Product { Price = new Money { Euros = 1, Cents = 50 } };
-
-            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, 1));
+            
+            Assert.ThrowsException<InvalidProductException>(() => candyMachine.AddProduct(product, 1, 1));
         }
 
         [TestMethod()]
@@ -187,8 +189,8 @@ namespace CandyMachine.Tests
             candyMachine.InsertCoin(new Money { Euros = 1 });
 
             // Try to buy product from unexisting shelfs
-            Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.Buy(20));
-            Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.Buy(-1));
+            Assert.ThrowsException<InvalidProductNumberException>(() => candyMachine.Buy(20));
+            Assert.ThrowsException<InvalidProductNumberException>(() => candyMachine.Buy(-1));
         }
 
         [TestMethod()]
@@ -223,7 +225,7 @@ namespace CandyMachine.Tests
             Assert.IsTrue(productTwix.Equals(purchasedTwix));
 
             // Try to buy another product from the shelf which is now empty
-            Assert.ThrowsException<Exception>(() => candyMachine.Buy(1));
+            Assert.ThrowsException<ProductOutOfStockException>(() => candyMachine.Buy(1));
         }
 
         [TestMethod()]
@@ -231,7 +233,7 @@ namespace CandyMachine.Tests
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
 
-            Assert.ThrowsException<Exception>(() => candyMachine.Buy(1));
+            Assert.ThrowsException<ProductOutOfStockException>(() => candyMachine.Buy(1));
         }
 
         [TestMethod()]
@@ -249,7 +251,7 @@ namespace CandyMachine.Tests
             candyMachine.InsertCoin(new Money { Euros = 1 });
 
             // Buy 1 snicker which costs 1 euro 20 cents with only 1 euro
-            Assert.ThrowsException<ArithmeticException>(() => candyMachine.Buy(productNumber));
+            Assert.ThrowsException<NotEnoughMoneyException>(() => candyMachine.Buy(productNumber));
 
             // Insert missing amount of money (20 cents) and try to buy the same product again
             candyMachine.InsertCoin(new Money { Cents = 20 });
@@ -307,10 +309,10 @@ namespace CandyMachine.Tests
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
 
             // Insert invalid coins
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Cents = 1 }));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Cents = 2 }));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Cents = 5 }));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => candyMachine.InsertCoin(new Money { Euros = 2 }));
+            Assert.ThrowsException<InvalidCoinException>(() => candyMachine.InsertCoin(new Money { Cents = 1 }));
+            Assert.ThrowsException<InvalidCoinException>(() => candyMachine.InsertCoin(new Money { Cents = 2 }));
+            Assert.ThrowsException<InvalidCoinException>(() => candyMachine.InsertCoin(new Money { Cents = 5 }));
+            Assert.ThrowsException<InvalidCoinException>(() => candyMachine.InsertCoin(new Money { Euros = 2 }));
         }
 
         [TestMethod()]

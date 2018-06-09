@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CandyMachine.CandyMachineExceptions;
+using System;
 
 namespace CandyMachine
 {
@@ -68,13 +69,13 @@ namespace CandyMachine
 
             if (spaceLeftInShelf == 0)
             {
-                throw new Exception("Shelf is full. You cannot add more products to it.");
+                throw new InvalidProductCountException("Shelf is full. You cannot add more products to it.");
             }
             else
             {
                 if (count < 1 || count > spaceLeftInShelf)
                 {
-                    throw new ArgumentException($"Product count must be > 0 and <= {spaceLeftInShelf}");
+                    throw new InvalidProductCountException($"Product count must be > 0 and <= {spaceLeftInShelf}");
                 }
             }
 
@@ -83,14 +84,14 @@ namespace CandyMachine
             {
                 if (!Product.Equals(product))
                 {
-                    throw new ArgumentException("You cannot add different products in one shelf.");
+                    throw new InvalidProductException("You cannot add different products in one shelf.");
                 }
             }
             
             // Check if product has name
             if (String.IsNullOrEmpty(product.Name))
             {
-                throw new ArgumentException("Product must contain a name.");
+                throw new InvalidProductException("Product must contain a name.");
             }
         }
     }
