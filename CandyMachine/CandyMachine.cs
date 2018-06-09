@@ -53,53 +53,6 @@ namespace CandyMachine
             shelves[productNumber].AddProduct(product, count);
         }
 
-        /// <summary>
-        /// Checks if product number is valid.
-        /// Checks if there is enough space in specified candy machine position (shelf number).
-        /// Checks if user is trying to add different products in one shelf.
-        /// Checks if product price can be made of acceptable coins.
-        /// </summary>
-        /// <param name="product">Product that we want to add.</param>
-        /// <param name="count">Units of product.</param>
-        /// <param name="productNumber">Product number in candy machine product list (shelf number).</param>
-        private void ValidateProduct(Product product, int count, int productNumber)
-        {
-            ValidateProductNumber(productNumber);
-
-            Shelf shelf = shelves[productNumber];
-
-            // Check if there is enough space for product in specified productNumber position
-            int alreadyAddedProductCount = shelf.ProductCount;
-            int spaceLeftInShelf = shelf.ShelfSize - alreadyAddedProductCount;
-
-            if (spaceLeftInShelf == 0)
-            {
-                throw new Exception("Shelf is full. You cannot add more products to it.");
-            }
-            else
-            {
-                if (count < 1 || count > spaceLeftInShelf)
-                {
-                    throw new ArgumentException($"Product count must be > 0 and <= {spaceLeftInShelf}");
-                }
-            }
-
-            // Check if user is trying to add different product to productNumber position
-            if (shelf.Product != null)
-            {
-                if (!shelf.Product.Equals(product))
-                {
-                    throw new ArgumentException("You cannot add different products in one shelf");
-                }
-            }
-
-            // Check if product price is correct (it can be made of acceptable coins)
-            if (false == MoneyHelper.CanPriceBeMadeOfAcceptableCoins(product.Price, acceptableCoins))
-            {
-                throw new ArgumentException($"Price {MoneyHelper.ConvertMoneyToString(product.Price)} cannot be made of acceptable coins: {MoneyHelper.ConvertMoneyListToString(acceptableCoins)}");
-            }
-        }
-
         ///<summary>Buys product from list of products.</summary>
         ///<param name="productNumber">Product number in candy machine product list.</param>
         ///<returns>Returns instance of Product that we bought.</returns>
@@ -185,7 +138,7 @@ namespace CandyMachine
         /// <summary>Checks if shelf with given number exists.</summary>
         /// <param name="productNumber">Product number which represents shelf number.</param>
         /// <returns>Returns true if candy machine contains shelf with given number.</returns>
-        public void ValidateProductNumber(int productNumber)
+        private void ValidateProductNumber(int productNumber)
         {
             if (productNumber < 0 || productNumber > ShelfCount - 1)
             {

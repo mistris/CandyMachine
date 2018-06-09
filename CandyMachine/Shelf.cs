@@ -55,10 +55,9 @@ namespace CandyMachine
         }
 
         /// <summary>
-        /// Checks if product number is valid.
         /// Checks if there is enough space in specified candy machine position (shelf number).
         /// Checks if user is trying to add different products in one shelf.
-        /// Checks if product price can be made of acceptable coins.
+        /// Checks if product has name.
         /// </summary>
         /// <param name="product">Product that we want to add.</param>
         /// <param name="count">Units of product.</param>
