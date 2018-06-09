@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CandyMachine
 {
@@ -44,7 +42,13 @@ namespace CandyMachine
         /// <param name="productNumber">Product number in candy machine product list.</param>
         public void AddProduct(Product product, int count, int productNumber)
         {
-            ValidateProduct(product, count, productNumber);
+            ValidateProductNumber(productNumber);
+
+            // Check if product price is correct (it can be made of acceptable coins)
+            if (false == MoneyHelper.CanPriceBeMadeOfAcceptableCoins(product.Price, acceptableCoins))
+            {
+                throw new ArgumentException($"Price {MoneyHelper.ConvertMoneyToString(product.Price)} cannot be made of acceptable coins: {MoneyHelper.ConvertMoneyListToString(acceptableCoins)}");
+            }
 
             shelves[productNumber].AddProduct(product, count);
         }
@@ -60,16 +64,12 @@ namespace CandyMachine
         /// <param name="productNumber">Product number in candy machine product list (shelf number).</param>
         private void ValidateProduct(Product product, int count, int productNumber)
         {
-            // Check if productNumber position is valid
-            if (productNumber < 0 || productNumber > shelves.Length - 1)
-            {
-                throw new IndexOutOfRangeException($"productNumber must be >= 0 and <= {shelves.Length - 1}");
-            }
+            ValidateProductNumber(productNumber);
 
             Shelf shelf = shelves[productNumber];
 
             // Check if there is enough space for product in specified productNumber position
-            int alreadyAddedProductCount = shelf == null ? 0 : shelf.ProductCount;
+            int alreadyAddedProductCount = shelf.ProductCount;
             int spaceLeftInShelf = shelf.ShelfSize - alreadyAddedProductCount;
 
             if (spaceLeftInShelf == 0)
@@ -105,10 +105,12 @@ namespace CandyMachine
         ///<returns>Returns instance of Product that we bought.</returns>
         public Product Buy(int productNumber)
         {
+            ValidateProductNumber(productNumber);
+
             Shelf shelf = shelves[productNumber];
 
             // Do not allow purchase if shelf doesn't contain at least one unit of the selected product.
-            if (shelf.ProductCount < 1)
+            if (shelf.IsEmpty())
             {
                 throw new Exception("The selected product is out of stock");
             }
@@ -118,7 +120,7 @@ namespace CandyMachine
             // Check if there is enough current amount of money to buy selected product
             if (MoneyHelper.ConvertMoneyToCents(Amount) < MoneyHelper.ConvertMoneyToCents(selectedProduct.Price))
             {
-                throw new ArithmeticException("Selected product's price is bigger than current amount of money.");
+                throw new ArithmeticException("Selected product's price is greater than current amount of money.");
             }
 
             // Decrease selected product count and subtract price from current amount of money.
@@ -131,6 +133,8 @@ namespace CandyMachine
         ///<summary>Calculates remaining amount of product</summary>
         public int GetProductAmount(int productNumber)
         {
+            ValidateProductNumber(productNumber);
+
             return shelves[productNumber].ProductCount;
         }
 
@@ -153,6 +157,7 @@ namespace CandyMachine
         /// <summary>Returns current amount of money (remainder)</summary>
         public Money ReturnMoney()
         {
+            // Put remainder to return in a separate variable in order to empty current amount of money.
             Money returnMoney = Amount;
             Amount = new Money();
 
@@ -164,6 +169,8 @@ namespace CandyMachine
         ///<param name="product">Product that we want to find.</param>
         public bool HasProduct(int productNumber, Product product)
         {
+            ValidateProductNumber(productNumber);
+
             return shelves[productNumber].ContainsProduct(product);
         }
 
@@ -173,6 +180,17 @@ namespace CandyMachine
         public static bool IsCoinValid(Money coin)
         {
             return acceptableCoins.Contains(coin);
+        }
+        
+        /// <summary>Checks if shelf with given number exists.</summary>
+        /// <param name="productNumber">Product number which represents shelf number.</param>
+        /// <returns>Returns true if candy machine contains shelf with given number.</returns>
+        public void ValidateProductNumber(int productNumber)
+        {
+            if (productNumber < 0 || productNumber > ShelfCount - 1)
+            {
+                throw new IndexOutOfRangeException($"Product number must be between 0 and {ShelfCount - 1}");
+            }
         }
     }
 }

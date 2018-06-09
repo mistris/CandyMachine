@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CandyMachine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CandyMachine.Tests
 {
@@ -89,7 +85,7 @@ namespace CandyMachine.Tests
         }
 
         [TestMethod()]
-        public void TryToMakeInValidPriceOfAcceptableCoinsTest()
+        public void TryToMakeInvalidPriceOfAcceptableCoinsTest()
         {
             Money price = new Money { Euros = 1, Cents = 30 };
 

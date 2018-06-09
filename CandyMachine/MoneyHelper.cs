@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CandyMachine
 {
@@ -105,6 +103,7 @@ namespace CandyMachine
                     moneyString += price.Euros + " euro";
                 }
 
+                // Put pipe symbol after every coin element except the last one
                 if (!price.Equals(lastMoneyInList))
                 {
                     moneyString += " | ";

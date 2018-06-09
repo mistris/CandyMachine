@@ -1,6 +1,6 @@
 C:\Users\reinis\source\repos\CandyMachine\CandyMachine\bin\Debug\CandyMachine.dll
 C:\Users\reinis\source\repos\CandyMachine\CandyMachine\bin\Debug\CandyMachine.pdb
-C:\Users\reinis\source\repos\CandyMachine\CandyMachine\obj\Debug\CandyMachine.csprojAssemblyReference.cache
 C:\Users\reinis\source\repos\CandyMachine\CandyMachine\obj\Debug\CandyMachine.csproj.CoreCompileInputs.cache
 C:\Users\reinis\source\repos\CandyMachine\CandyMachine\obj\Debug\CandyMachine.dll
 C:\Users\reinis\source\repos\CandyMachine\CandyMachine\obj\Debug\CandyMachine.pdb
+C:\Users\reinis\source\repos\CandyMachine\CandyMachine\obj\Debug\CandyMachine.csprojAssemblyReference.cache

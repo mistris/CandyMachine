@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CandyMachine
 {
@@ -41,6 +37,7 @@ namespace CandyMachine
         /// <param name="count">How many products do we want to add.</param>
         public void AddProduct(Product product, int count)
         {
+            ValidateProduct(product, count);
             Product = product;
             ProductCount += count;
         }
@@ -55,6 +52,47 @@ namespace CandyMachine
         public bool IsEmpty()
         {
             return Product == null || ProductCount == 0;
+        }
+
+        /// <summary>
+        /// Checks if product number is valid.
+        /// Checks if there is enough space in specified candy machine position (shelf number).
+        /// Checks if user is trying to add different products in one shelf.
+        /// Checks if product price can be made of acceptable coins.
+        /// </summary>
+        /// <param name="product">Product that we want to add.</param>
+        /// <param name="count">Units of product.</param>
+        private void ValidateProduct(Product product, int count)
+        {
+            // Check if there is enough space for product in specified productNumber position
+            int spaceLeftInShelf = ShelfSize - ProductCount;
+
+            if (spaceLeftInShelf == 0)
+            {
+                throw new Exception("Shelf is full. You cannot add more products to it.");
+            }
+            else
+            {
+                if (count < 1 || count > spaceLeftInShelf)
+                {
+                    throw new ArgumentException($"Product count must be > 0 and <= {spaceLeftInShelf}");
+                }
+            }
+
+            // Check if user is trying to add different product to productNumber position
+            if (Product != null)
+            {
+                if (!Product.Equals(product))
+                {
+                    throw new ArgumentException("You cannot add different products in one shelf.");
+                }
+            }
+            
+            // Check if product has name
+            if (String.IsNullOrEmpty(product.Name))
+            {
+                throw new ArgumentException("Product must contain a name.");
+            }
         }
     }
 }

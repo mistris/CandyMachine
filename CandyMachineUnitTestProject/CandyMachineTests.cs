@@ -1,10 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CandyMachine;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CandyMachine.Tests
 {
@@ -14,20 +9,6 @@ namespace CandyMachine.Tests
         private const string Manufacturer = "Saeco";
         private const int ShelfCount = 10;
         private const int ShelfSize = 5;
-
-        private void FillShelvesWithProducts(CandyMachine candyMachine)
-        {
-            candyMachine.AddProduct(new Product { Name = "Bounty", Price = new Money { Cents = 80 } }, ShelfSize, 0);
-            candyMachine.AddProduct(new Product { Name = "Daim", Price = new Money { Euros = 1, Cents = 10 } }, ShelfSize, 1);
-            candyMachine.AddProduct(new Product { Name = "KitKat", Price = new Money { Euros = 1 } }, ShelfSize, 2);
-            candyMachine.AddProduct(new Product { Name = "Lion", Price = new Money { Cents = 70 } }, ShelfSize, 3);
-            candyMachine.AddProduct(new Product { Name = "Mars", Price = new Money { Cents = 90 } }, ShelfSize, 4);
-            candyMachine.AddProduct(new Product { Name = "MilkyWay", Price = new Money { Cents = 80 } }, ShelfSize, 5);
-            candyMachine.AddProduct(new Product { Name = "Skittles", Price = new Money { Euros = 1, Cents = 60 } }, ShelfSize, 6);
-            candyMachine.AddProduct(new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 20 } }, ShelfSize, 7);
-            candyMachine.AddProduct(new Product { Name = "Tupla", Price = new Money { Cents = 80 } }, ShelfSize, 8);
-            candyMachine.AddProduct(new Product { Name = "Twix", Price = new Money { Cents = 70 } }, ShelfSize, 9);
-        }
 
         [TestMethod()]
         public void CandyMachineTest()
@@ -42,9 +23,7 @@ namespace CandyMachine.Tests
         public void AddValidProductTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
-
-            Money price = new Money { Euros = 1, Cents = 50 };
-            Product product = new Product { Name = "Snickers", Price = price };
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 50 } };
 
             int productNumber = 1;
 
@@ -57,9 +36,7 @@ namespace CandyMachine.Tests
         public void AddProductWithInvalidProductNumberTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
-
-            Money price = new Money { Euros = 1, Cents = 50 };
-            Product product = new Product { Name = "Snickers", Price = price };
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 50 } };
 
             Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.AddProduct(product, 3, -1));
             Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.AddProduct(product, 3, 10));
@@ -69,9 +46,7 @@ namespace CandyMachine.Tests
         public void AddProductWithInvalidProductCountTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
-
-            Money price = new Money { Euros = 1, Cents = 50 };
-            Product product = new Product { Name = "Snickers", Price = price };
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 50 } };
 
             // Try to add -1 products in a shelf
             Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, -1, 1));
@@ -83,15 +58,13 @@ namespace CandyMachine.Tests
             candyMachine.AddProduct(product, 5, 1);
             Assert.ThrowsException<Exception>(() => candyMachine.AddProduct(product, 1, 1));
         }
-        
+
         [TestMethod()]
         public void AddProductWithInvalidPriceTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 55 } };
 
-            Money price = new Money { Euros = 1, Cents = 55 };
-            Product product = new Product { Name = "Snickers", Price = price };
-            
             Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, 1));
         }
 
@@ -112,12 +85,42 @@ namespace CandyMachine.Tests
         }
 
         [TestMethod()]
-        public void BuyProductWithEnoughMoneyTest()
+        public void AppendValidProductToOneShelfTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
 
-            Money price = new Money { Euros = 1, Cents = 20 };
+            Money price = new Money { Euros = 1, Cents = 50 };
             Product product = new Product { Name = "Snickers", Price = price };
+
+            int productNumber = 1;
+
+            // Add 1 product in shelf so there is enough space for other products
+            candyMachine.AddProduct(product, 1, productNumber);
+
+            // Try to add one more valid product to the same shelf
+            Product anotherProduct = new Product { Name = "Snickers", Price = price };
+            candyMachine.AddProduct(anotherProduct, 1, productNumber);
+
+            // Check if count for this product increased
+            Assert.AreEqual(2, candyMachine.GetProductAmount(productNumber));
+        }
+
+        [TestMethod()]
+        public void TryToAddProductWithoutNameTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+            Product product = new Product { Price = new Money { Euros = 1, Cents = 50 } };
+
+            int productNumber = 1;
+
+            Assert.ThrowsException<ArgumentException>(() => candyMachine.AddProduct(product, 1, productNumber));
+        }
+
+        [TestMethod()]
+        public void BuyProductWithEnoughMoneyTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 20 } };
 
             // Add 5 snickers into candy machine
             int count = 5;
@@ -132,9 +135,7 @@ namespace CandyMachine.Tests
             Product purchasedProduct = candyMachine.Buy(productNumber);
 
             // Check if candy machine gave us the correct product
-            Assert.AreEqual("Snickers", purchasedProduct.Name);
-            Assert.AreEqual(1, purchasedProduct.Price.Euros);
-            Assert.AreEqual(20, purchasedProduct.Price.Cents);
+            Assert.IsTrue(product.Equals(purchasedProduct));
 
             // Check if candy machine now contains 4 snickers
             Assert.AreEqual(4, candyMachine.GetProductAmount(productNumber));
@@ -146,12 +147,96 @@ namespace CandyMachine.Tests
         }
 
         [TestMethod()]
-        public void TryToBuyProductWithInsufficientAndWithSufficientAmountOfMoneyTest()
+        public void BuyTwoDifferentProductsAndGetRemainderTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+            Product productSnickers = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 20 } };
+            Product productTwix = new Product { Name = "Twix", Price = new Money { Euros = 1 } };
+
+            // Add products to candy machine
+            candyMachine.AddProduct(productSnickers, 5, 0);
+            candyMachine.AddProduct(productTwix, 5, 1);
+
+            // Insert 3 euros into candy machine
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+
+            // Buy 1 snickers and 1 twix
+            candyMachine.Buy(0);
+            candyMachine.Buy(1);
+
+            // Check if remainder is 80 cents
+            Money remainder = candyMachine.ReturnMoney();
+            Assert.AreEqual(0, remainder.Euros);
+            Assert.AreEqual(80, remainder.Cents);
+        }
+
+        [TestMethod()]
+        public void TryToBuyProductFromUnexistingShelfTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1 } };
+
+            // Add 5 snickers into candy machine
+            candyMachine.AddProduct(product, 5, 7);
+
+            // Insert 1 euro into candy machine
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+
+            // Try to buy product from unexisting shelfs
+            Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.Buy(20));
+            Assert.ThrowsException<IndexOutOfRangeException>(() => candyMachine.Buy(-1));
+        }
+
+        [TestMethod()]
+        public void TryToBuyProductsEdgeCaseTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
 
-            Money price = new Money { Euros = 1, Cents = 20 };
-            Product product = new Product { Name = "Snickers", Price = price };
+            Product productSnickers = new Product { Name = "Snickers", Price = new Money { Cents = 80 } };
+            Product productTwix = new Product { Name = "Twix", Price = new Money { Euros = 1 } };
+            Product productBounty = new Product { Name = "Bounty", Price = new Money { Euros = 1, Cents = 10 } };
+
+            // Add products to candy machine
+            candyMachine.AddProduct(productSnickers, 5, 0);
+            candyMachine.AddProduct(productTwix, 1, 1);
+            candyMachine.AddProduct(productBounty, 2, 2);
+
+            // Insert 3 euros into candy machine
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+            candyMachine.InsertCoin(new Money { Euros = 1 });
+
+            // Buy product from the 1st shelf
+            Product purchasedSnickers = candyMachine.Buy(0);
+            Assert.IsTrue(productSnickers.Equals(purchasedSnickers));
+
+            // Buy product from the last shelf
+            Product purchasedBounty = candyMachine.Buy(2);
+            Assert.IsTrue(productBounty.Equals(purchasedBounty));
+
+            // Buy the last product from shelf
+            Product purchasedTwix = candyMachine.Buy(1);
+            Assert.IsTrue(productTwix.Equals(purchasedTwix));
+
+            // Try to buy another product from the shelf which is now empty
+            Assert.ThrowsException<Exception>(() => candyMachine.Buy(1));
+        }
+
+        [TestMethod()]
+        public void TryToBuyProductFromEmptyCandyMachineTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+
+            Assert.ThrowsException<Exception>(() => candyMachine.Buy(1));
+        }
+
+        [TestMethod()]
+        public void TryToBuyProductWithInsufficientAndWithSufficientAmountOfMoneyTest()
+        {
+            CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 20 } };
 
             // Add 1 snickers into candy machine
             int count = 1;
@@ -170,9 +255,7 @@ namespace CandyMachine.Tests
             Product purchasedProduct = candyMachine.Buy(productNumber);
 
             // Check if candy machine gave us the correct product
-            Assert.AreEqual("Snickers", purchasedProduct.Name);
-            Assert.AreEqual(1, purchasedProduct.Price.Euros);
-            Assert.AreEqual(20, purchasedProduct.Price.Cents);
+            Assert.IsTrue(product.Equals(purchasedProduct));
 
             // Check if there are no more snickers in candy machine
             Assert.AreEqual(0, candyMachine.GetProductAmount(productNumber));
@@ -187,9 +270,7 @@ namespace CandyMachine.Tests
         public void GetProductAmountTest()
         {
             CandyMachine candyMachine = new CandyMachine(Manufacturer, ShelfCount, ShelfSize);
-
-            Money price = new Money { Euros = 1, Cents = 50 };
-            Product product = new Product { Name = "Snickers", Price = price };
+            Product product = new Product { Name = "Snickers", Price = new Money { Euros = 1, Cents = 50 } };
 
             // Add 4 products to the 3rd position of candy machine
             int count = 4;
